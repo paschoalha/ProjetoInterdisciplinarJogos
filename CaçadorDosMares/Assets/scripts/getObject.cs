@@ -8,71 +8,73 @@ using UnityEngine;
 
 public class getObject : MonoBehaviour
 {
+   
+
+
     private MensagemLimit messageController;
+    private PlayerInventory playerInventory;
+    
 
     private void Start()
     {
-     messageController = FindObjectOfType<MensagemLimit>();
+        messageController = FindObjectOfType<MensagemLimit>();
     }
+
     void OnTriggerEnter(Collider other)
     {
-        PlayerInventory playerInventory = other.GetComponent<PlayerInventory>();
+        playerInventory = other.GetComponent<PlayerInventory>();
 
-        if (playerInventory != null && playerInventory.NumdeLixos < 10)
+        if (playerInventory != null)
         {
-            playerInventory.lixoColetado();
-            gameObject.SetActive(false);
+            if (playerInventory.NumdeLixos < 10)
+            {
+                playerInventory.lixoColetado();
+                gameObject.SetActive(false);
+                Invoke(nameof(Respawn), 60f); ;
+                gameObject.GetComponent<SphereCollider>().enabled = false;
             
-
-            }
-        else
-        {
-
-            Collider lixoCollider = GetComponent<Collider>();
-            if (lixoCollider != null)
+            }   
+            else
             {
-                lixoCollider.enabled = false;
+                
+                gameObject.GetComponent<Collider>().enabled = false;
+               
             }
-           
-            if (messageController != null )
-            {
-                messageController.ShowMessage("Você nao pode pegar seu arrombado!!!");
-            }
+        }
+    }
 
-        }
-        }
     private void OnTriggerExit(Collider other)
     {
         if (messageController != null)
         {
             messageController.HideMessage();
-
         }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        // Se o jogador já atingiu o limite, exibe a mensagem toda vez que ele passar sobre o objeto
+        
+            if (playerInventory.NumdeLixos == 10)
+            {
+                
+                messageController.ShowMessage("Você já coletou 10 lixos!");
+            }
+          
+        
+        // Se o jogador não atingiu o limite e o inventário é válido, garanta que a mensagem esteja oculta
+       
+    }
+
+
+    
+    private void Respawn()
+    {
+        gameObject.SetActive(true);
+        gameObject.GetComponent<SphereCollider>().enabled = true;
     }
 }
 
-
-    /*void OnTriggerEnter(Collider other)
-    {
-
-        // Ao colidir com um objeto, tenta agarrá-lo
-        Debug.Log("passei aqui");
-        if (other.gameObject.tag == "barco")
-
-
-
-
-            Destroy(this.gameObject);
-
-
-
-
-
-
-
-
-        }
-    */
 
 
 

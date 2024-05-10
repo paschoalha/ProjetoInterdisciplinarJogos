@@ -17,6 +17,7 @@ lixoText = GetComponent<TextMeshProUGUI>();
     public void UpdatelixoText(PlayerInventory player)
     {
         lixoText.text = player.NumdeLixos.ToString();
+        
     }
 
 }
